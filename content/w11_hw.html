@@ -172,6 +172,44 @@ img.add_border {
 <p><span><iframe allowfullscreen="allowfullscreen" height="314" src="//www.youtube.com/embed/HJju8_rr5Ww" width="560"></iframe></span></p>
 <p><span>操作心得:</span></p>
 <p><span>最後這個模擬真的超級無敵難一直重複看教學才用出來的，原本組合件的問題有兩個連在一起不能用銷所以又從組合建修改後重用後面打彈珠的地方結構和老師不一樣也不知道怎麼改所以執行時會一直抖，但執行程式按WS又會轉動。</span></p>
+<p><span>Python ZMQ remote API 控制程式如下:</span></p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false"># pip install pyzmq cbor keyboard
+from coppeliasim_zmqremoteapi_client import RemoteAPIClient
+import keyboard
+
+# Connecting to the CoppeliaSim server
+client = RemoteAPIClient('localhost', 23000)
+
+print('Program started')
+sim = client.getObject('sim')
+
+# Get the handle for the slider (prismatic joint)
+slider = sim.getObject('/Prismatic_joint')
+
+# Starting the simulation
+sim.startSimulation()
+print('Simulation started')
+
+# Main control loop
+def main():
+    # Keep running until simulation is stopped
+    while True:
+        if keyboard.is_pressed('w'):  # Move slider to -0.15 position
+            print("w is pressed")
+            sim.setJointTargetPosition(slider, -0.15)
+        
+        if keyboard.is_pressed('s'):  # Reset slider to the original position
+            print("s is pressed")
+            sim.setJointTargetPosition(slider, 0.0)  # Reset to the initial position
+
+        if keyboard.is_pressed('q'):  # Stop the simulation when 'q' is pressed
+            print("q is pressed - stopping simulation")
+            sim.stopSimulation()
+            break
+
+# Start the main control loop
+main()
+</pre>
 <p>STL連結:</p>
 <p><a href="https://mdecad2024.github.io/hw-41223224/cmsimde/static/viewstl.html?src=https://s104.cycu.org/~41223224/fliper.stl">https://mdecad2024.github.io/hw-41223224/cmsimde/static/viewstl.html?src=https://s104.cycu.org/~41223224/fliper.stl</a></p>
 <p><a href="https://mdecad2024.github.io/hw-41223224/cmsimde/static/viewstl.html?src=https://s104.cycu.org/~41223224/plastiqueflipper.stl">https://mdecad2024.github.io/hw-41223224/cmsimde/static/viewstl.html?src=https://s104.cycu.org/~41223224/plastiqueflipper.stl</a></p>
